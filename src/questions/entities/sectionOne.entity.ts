@@ -1,6 +1,9 @@
 import { UserEntity } from "src/auth/entities/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Timestamp, UpdateDateColumn } from "typeorm";
-import { EmployeeCount } from "utility/common/employeeCount .enum";
+import { Clients } from "utility/common/clients.enum";
+import { JobCategory } from "utility/common/jobCategory.enum";
+import { WRO } from "utility/common/wro.enum";
+
 
 @Entity('sectionOne')
 export class SectionOneEntity {
@@ -9,43 +12,40 @@ export class SectionOneEntity {
     id: number;
 
     @Column()
-    companyName: string;
+    name: string;
 
     @Column()
-    businessAddress: string;
+    jobTitle: string;
 
-    @Column()
-    city: string;
+    @Column({ type: 'enum', enum: JobCategory })
+    jobCategory: JobCategory;
 
-    @Column()
-    postalCode: string;
+    @Column({ type: 'enum', enum: Clients })
+    clients: Clients;
 
-    @Column()
-    country: string;
+    @Column({ nullable: true })
+    registeredName: string;
 
-    @Column()
-    companyWebsite: string;
+    @Column({ nullable: true })
+    licensingScheme: string;
 
-    @Column()
-    primaryContactName: string;
+    @Column({ nullable: true })
+    licenseNumber: string;
 
-    @Column({ unique: true })
-    primaryContactEmail: string;
+    @Column({ nullable: true })
+    licenseExpiryDate : string;
 
-    @Column()
-    primaryContactPhoneNumber: string;
+    @Column({ nullable: true })
+    additionalCertification: string;
 
-    @Column()
-    natureOfServicesProvided: string;
+    @Column({ nullable: true })
+    certificationNumber : string;
 
-    @Column({ type: 'enum', enum: EmployeeCount })
-    numberOfEmployees: EmployeeCount;
+    @Column({ nullable: true })
+    certificationExpiryDate: string;
 
-    @Column()
-    established: string;
-
-    @Column()
-    certifications: string;
+    @Column({ type: 'enum', enum: WRO })
+    wro: WRO;
 
     @CreateDateColumn()
     createdAt: Timestamp;

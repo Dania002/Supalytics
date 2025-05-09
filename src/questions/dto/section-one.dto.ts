@@ -1,56 +1,54 @@
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
-import { EmployeeCount } from "utility/common/employeeCount .enum";
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { JobCategory } from 'utility/common/jobCategory.enum';
+import { Clients } from 'utility/common/clients.enum';
+import { WRO } from 'utility/common/wro.enum';
 
 export class SectionOneDto {
-    @IsNotEmpty({ message: 'Company  Name cannot be empty.' })
-    @IsString({ message: 'Company Name should be string.' })
-    companyName: string;
+    @IsNotEmpty()
+    @IsString()
+    name: string;
 
-    @IsNotEmpty({ message: 'Business Address cannot be empty.' })
-    @IsString({ message: 'Business Address should be string.' })
-    businessAddress: string;
+    @IsNotEmpty()
+    @IsString()
+    jobTitle: string;
 
-    @IsNotEmpty({ message: 'City cannot be empty.' })
-    @IsString({ message: 'City should be string.' })
-    city: string;
+    @IsNotEmpty()
+    @IsEnum(JobCategory)
+    jobCategory: JobCategory;
 
-    @IsNotEmpty({ message: 'Postal Code cannot be empty.' })
-    @IsString({ message: 'Postal Code should be string.' })
-    postalCode: string;
+    @IsNotEmpty()
+    @IsEnum(Clients)
+    clients: Clients;
 
-    @IsNotEmpty({ message: 'Country cannot be empty.' })
-    @IsString({ message: 'Country should be string.' })
-    country: string;
+    @IsOptional()
+    @IsString()
+    registeredName?: string;
 
-    @IsNotEmpty({ message: 'Company Website cannot be empty.' })
-    @IsString({ message: 'Company Website should be string.' })
-    companyWebsite: string;
+    @IsOptional()
+    @IsString()
+    licensingScheme?: string;
 
-    @IsNotEmpty({ message: 'Primary Contact Name cannot be empty.' })
-    @IsString({ message: 'Primary Contact Name should be string.' })
-    primaryContactName: string;
+    @IsOptional()
+    @IsString()
+    licenseNumber?: string;
 
-    @IsNotEmpty({ message: 'Primary Contact Email cannot be empty.' })
-    @IsString({ message: 'Primary Contact Email should be string.' })
-    primaryContactEmail: string;
+    @IsOptional()
+    @IsString()
+    licenseExpiryDate?: string;
 
-    @IsNotEmpty({ message: 'Primary Contact Phone Number cannot be empty.' })
-    @IsString({ message: 'Primary Contact Phone Number should be string.' })
-    primaryContactPhoneNumber: string;
+    @IsOptional()
+    @IsString()
+    additionalCertification?: string;
 
-    @IsNotEmpty({ message: 'Nature Of Services Provided cannot be empty.' })
-    @IsString({ message: 'Nature Of Services Provided should be string.' })
-    natureOfServicesProvided: string;
+    @IsOptional()
+    @IsString()
+    certificationNumber?: string;
 
-    @IsNotEmpty({ message: 'Number Of Employees cannot be empty.' })
-    @IsEnum(EmployeeCount, { message: 'Number Of Employees must be one of the 123....' })
-    numberOfEmployees: EmployeeCount;
+    @IsOptional()
+    @IsString()
+    certificationExpiryDate?: string;
 
-    @IsNotEmpty({ message: 'Established cannot be empty.' })
-    @IsString({ message: 'Established should be string.' })
-    established: string;
-
-    @IsNotEmpty({ message: 'Certifications cannot be empty.' })
-    @IsString({ message: 'Certifications should be string.' })
-    certifications: string;
+    @IsNotEmpty()
+    @IsEnum(WRO)
+    wro: WRO;
 }
