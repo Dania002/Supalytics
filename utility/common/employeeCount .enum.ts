@@ -1,0 +1,7 @@
+export enum EmployeeCount {
+    ONE_TO_TEN = '1-10',
+    ELEVEN_TO_FIFTY = '11-50',
+    FIFTY_ONE_TO_TWO_HUNDRED = '51-200',
+    TWO_HUNDRED_ONE_TO_FIVE_HUNDRED = '201-500',
+    OVER_FIVE_HUNDRED = 'Over 500'
+}

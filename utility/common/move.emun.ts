@@ -1,0 +1,7 @@
+export enum Move {
+    YES_LOW_INCOME = 'YES_LOW_INCOME',
+    YES_MIDDLE_INCOME = 'YES_MIDDLE_INCOME',
+    YES_HIGH_INCOME = 'YES_HIGH_INCOME',
+    NO = 'NO',
+    UNKNOWN = 'UNKNOWN',
+}
