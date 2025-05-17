@@ -8,12 +8,15 @@ import * as bcrypt from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { Roles } from 'utility/common/roles.enum';
 import { UserLogInDto } from './dto/user-login.dto';
+import { CompanyEntity } from 'src/company/entity/company.entity';
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(UserEntity)
         private userRepository: Repository<UserEntity>,
+        @InjectRepository(CompanyEntity)
+        private companyRepository: Repository<CompanyEntity>,
     ) { }
 
     async signup(userSignUpDto: UserSignUpDto) {
@@ -28,6 +31,12 @@ export class AuthService {
             ...userSignUpDto,
             role: Roles.SUPLIER
         });
+
+        const company = await this.companyRepository.findOneBy({ name: userSignUpDto.companyName });
+        if (!company) {
+            throw new BadRequestException('Company does not exist');
+        }
+        user.company = company;
 
         user = await this.userRepository.save(user);
 
@@ -48,7 +57,9 @@ export class AuthService {
 
         const accessToken = await this.accessToken(userExists);
 
-        return accessToken;
+        return {
+            "token": accessToken
+        };
     }
 
     async accessToken(user: UserEntity) {

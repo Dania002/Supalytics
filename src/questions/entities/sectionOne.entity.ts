@@ -4,7 +4,6 @@ import { Clients } from "utility/common/clients.enum";
 import { JobCategory } from "utility/common/jobCategory.enum";
 import { WRO } from "utility/common/wro.enum";
 
-
 @Entity('sectionOne')
 export class SectionOneEntity {
 

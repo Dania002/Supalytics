@@ -22,12 +22,18 @@ import { SectionEightEntity } from './entities/sectionEight.entity';
 import { SectionNineDto } from './dto/section-nine.dto';
 import { SectionNineEntity } from './entities/sectionNine.entity';
 import { SectionEightDto } from './dto/section-eight.dto';
+import { Roles } from 'utility/common/roles.enum';
+import { evaluateSectionRisk } from './risk-maps/evaluateRisk';
+import { sectionTwoRiskMap } from './risk-maps/sectionTwo-risk.map';
 
 @Injectable()
 export class QuestionsService {
   constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+
     @InjectRepository(SectionOneEntity)
-    private sectionOneEntity: Repository<SectionOneEntity>,
+    private sectionOneRepo: Repository<SectionOneEntity>,
 
     @InjectRepository(SectionTwoEntity)
     private sectionTwoRepo: Repository<SectionTwoEntity>,
@@ -55,13 +61,13 @@ export class QuestionsService {
   ) { }
 
   async sectionOne(sectionOneDto: SectionOneDto, user: UserEntity) {
-    const section = this.sectionOneEntity.create({
+    const section = this.sectionOneRepo.create({
       ...sectionOneDto,
       userId: user.id,
       user: user,
     });
 
-    return await this.sectionOneEntity.save(section);
+    return await this.sectionOneRepo.save(section);
   }
 
   async sectionTwo(dto: SectionTwoDto, file: Express.Multer.File, user: UserEntity) {
@@ -158,5 +164,108 @@ export class QuestionsService {
     });
 
     return this.sectionNineRepo.save(section);
+  }
+
+  async getSupplierRiskLevels(companyId?: number) {
+    const suppliers = await this.userRepository.find({
+      where: {
+        role: Roles.SUPLIER,
+        ...(companyId ? { company: { id: companyId } } : {}),
+      },
+      relations: ['company', 'sectionTwo', 'sectionThree', 'sectionFour', 'sectionFive', 'sectionSix', 'sectionSeven', 'sectionEight', 'sectionNine']
+    });
+
+    const result: {
+      name: string;
+      email: string;
+      company?: string;
+      riskLevel: 'high' | 'medium' | 'low';
+    }[] = [];
+
+    for (const supplier of suppliers) {
+      const section = supplier.sectionTwo?.[0];
+      if (!section) continue;
+
+      const risk = evaluateSectionRisk(section, sectionTwoRiskMap);
+      result.push({
+        name: `${supplier.firstName} ${supplier.lastName}`,
+        email: supplier.email,
+        company: supplier.company?.name,
+        riskLevel: risk,
+      });
+    }
+    return result;
+  }
+
+  async getSupplierRiskDetailsById(supplierId: number) {
+    const supplier = await this.userRepository.findOne({
+      where: { id: supplierId, role: Roles.SUPLIER },
+      relations: ['sectionTwo', 'company'],
+    });
+
+    if (!supplier || !supplier.sectionTwo?.[0]) return null;
+
+    const section = supplier.sectionTwo[0];
+    const answersWithRisk = Object.entries(section).map(([key, value]) => {
+      const risk = sectionTwoRiskMap[key]?.[value] || 'low';
+      return { question: key, answer: value, risk };
+    });
+
+    const filteredAnswers = answersWithRisk.filter(
+      (item) => item.risk === 'high' || item.risk === 'medium',
+    );
+
+    return {
+      name: `${supplier.firstName} ${supplier.lastName}`,
+      email: supplier.email,
+      company: supplier.company?.name,
+      answers: filteredAnswers,
+    };
+  }
+
+  async getSupplierRiskPointsByCompany(companyId: number) {
+    const suppliers = await this.userRepository.find({
+      where: {
+        role: Roles.SUPLIER,
+        company: { id: companyId },
+      },
+      relations: ['company', 'sectionTwo'],
+    });
+
+    const result: {
+      name: string;
+      email: string;
+      totalPoints: number;
+    }[] = [];
+
+    for (const supplier of suppliers) {
+      const section = supplier.sectionTwo?.[0];
+      if (!section) continue;
+
+      let totalPoints = 0;
+      let hasHighOrMedium = false;
+
+      for (const [key, value] of Object.entries(section)) {
+        const risk = sectionTwoRiskMap[key]?.[value] || 'low';
+
+        if (risk === 'medium') {
+          totalPoints += 1;
+          hasHighOrMedium = true;
+        } else if (risk === 'high') {
+          totalPoints += 2;
+          hasHighOrMedium = true;
+        }
+      }
+
+      if (hasHighOrMedium) {
+        result.push({
+          name: `${supplier.firstName} ${supplier.lastName}`,
+          email: supplier.email,
+          totalPoints,
+        });
+      }
+    }
+
+    return result;
   }
 }

@@ -5,7 +5,9 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { QuestionsModule } from './questions/questions.module';
-import dataSource from './database/data-course';
+import { CompanyModule } from './company/company.module';
+import { AdminDbModule } from './admin-db/admin-db.module';
+import dataSource from './database/data-source';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import dataSource from './database/data-course';
     }),
     AuthModule,
     QuestionsModule,
+    CompanyModule,
+    AdminDbModule,
   ],
   controllers: [AppController],
   providers: [AppService],

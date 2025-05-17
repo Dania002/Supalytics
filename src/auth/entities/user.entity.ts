@@ -3,13 +3,14 @@ import { SectionFiveEntity } from "src/questions/entities/sectionFive.entity";
 import { SectionOneEntity } from "src/questions/entities/sectionOne.entity";
 import { SectionThreeEntity } from "src/questions/entities/sectionThree.entity";
 import { SectionTwoEntity } from "src/questions/entities/sectionTwo.entity";
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Timestamp, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Timestamp, UpdateDateColumn } from "typeorm";
 import { Companies } from "utility/common/companies.enum";
 import { Roles } from "utility/common/roles.enum";
 import { SectionSixEntity } from "src/questions/entities/sectionSix.entity";
 import { SectionSevenEntity } from "src/questions/entities/sectionSeven.entity";
 import { SectionEightEntity } from "src/questions/entities/sectionEight.entity";
 import { SectionNineEntity } from "src/questions/entities/sectionNine.entity";
+import { CompanyEntity } from "src/company/entity/company.entity";
 
 @Entity('users')
 export class UserEntity {
@@ -52,6 +53,10 @@ export class UserEntity {
 
     @UpdateDateColumn()
     updatedAt: Timestamp;
+
+    @ManyToOne(() => CompanyEntity, (company) => company.users)
+    @JoinColumn()
+    company: CompanyEntity;
 
     @OneToMany(() => SectionOneEntity, section => section.user)
     sectionOne: SectionOneEntity[];

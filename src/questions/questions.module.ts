@@ -11,9 +11,11 @@ import { SectionSixEntity } from './entities/sectionSix.entity';
 import { SectionSevenEntity } from './entities/sectionSeven.entity';
 import { SectionEightEntity } from './entities/sectionEight.entity';
 import { SectionNineEntity } from './entities/sectionNine.entity';
+import { UserEntity } from 'src/auth/entities/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
+    UserEntity,
     SectionOneEntity,
     SectionTwoEntity,
     SectionThreeEntity,
@@ -23,9 +25,11 @@ import { SectionNineEntity } from './entities/sectionNine.entity';
     SectionSevenEntity,
     SectionEightEntity,
     SectionNineEntity
-  ])],
+  ])
+],
   controllers: [QuestionsController],
-  providers: [QuestionsService]
+  providers: [QuestionsService],
+  exports: [QuestionsService]
 })
 
 export class QuestionsModule { }
