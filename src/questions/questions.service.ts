@@ -183,18 +183,18 @@ export class QuestionsService {
     }[] = [];
 
     for (const supplier of suppliers) {
-      const section = supplier.sectionTwo?.[0];
+      const section = await supplier.sectionTwo?.[0];
       if (!section) continue;
 
-      const risk = evaluateSectionRisk(section, sectionTwoRiskMap);
-      result.push({
+      const risk = await evaluateSectionRisk(section, sectionTwoRiskMap);
+      await result.push({
         name: `${supplier.firstName} ${supplier.lastName}`,
         email: supplier.email,
         company: supplier.company?.name,
         riskLevel: risk,
       });
     }
-    return result;
+    return await result;
   }
 
   async getSupplierRiskDetailsById(supplierId: number) {

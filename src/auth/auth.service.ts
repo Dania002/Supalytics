@@ -49,15 +49,17 @@ export class AuthService {
     }
 
     async login(userLogInDto: UserLogInDto) {
-        const userExists = await this.findUserByEmail(userLogInDto.email);
-        if (!userExists) throw new NotFoundException('Email is not available.');
+        const user = await this.findUserByEmail(userLogInDto.email);
+        if (!user) throw new NotFoundException('Email is not available.');
 
-        const isPasswordValid = await bcrypt.compare(userLogInDto.password, userExists.password);
+        const isPasswordValid = await bcrypt.compare(userLogInDto.password, user.password);
         if (!isPasswordValid) throw new BadRequestException('Incorrect password.');
 
-        const accessToken = await this.accessToken(userExists);
+        const accessToken = await this.accessToken(user);
 
         return {
+            "user": user,
+            "company": user.company? user.company: null,
             "token": accessToken
         };
     }

@@ -55,8 +55,11 @@ export class UserEntity {
     updatedAt: Timestamp;
 
     @ManyToOne(() => CompanyEntity, (company) => company.users)
-    @JoinColumn()
+    @JoinColumn({ name: 'companyId' })
     company: CompanyEntity;
+
+    @Column()
+    companyId: number; // this column is what stores the FK
 
     @OneToMany(() => SectionOneEntity, section => section.user)
     sectionOne: SectionOneEntity[];

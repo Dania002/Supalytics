@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Ti
 import { Compliance } from "utility/common/compliance.enum";
 import { Environmental } from "utility/common/environmental.enum";
 import { YesNo } from "utility/common/yesno.enum";
+import { YesNoCopy } from "utility/common/yesnocopy.enum";
 
 @Entity('sectionEight')
 export class SectionEightEntity {
@@ -13,8 +14,8 @@ export class SectionEightEntity {
   @Column({ type: 'enum', enum: YesNo })
   impact: YesNo;
 
-  @Column({ type: 'enum', enum: YesNo })
-  violations: YesNo;
+  @Column({ type: 'enum', enum: YesNoCopy })
+  violations: YesNoCopy;
 
   @Column({ type: 'enum', enum: Environmental })
   environmental: Environmental;
